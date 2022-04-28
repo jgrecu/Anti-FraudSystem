@@ -218,6 +218,24 @@ files:
     management.endpoint.shutdown.enabled=true
     spring.jackson.serialization.INDENT_OUTPUT=true
   learner_created: false
+- name: src/antifraud/model/Transaction.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/model/Response.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/controller/TransactionController.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/exceptions/RestExceptionHandler.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/model/Status.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/232/stages/1161/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Thu, 28 Apr 2022 12:10:14 UTC
 record: -1
