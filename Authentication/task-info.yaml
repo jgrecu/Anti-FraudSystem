@@ -484,6 +484,156 @@ files:
         };
     }
   learner_created: false
-feedback_link: https://hyperskill.org/projects/232/stages/1162/implement#comment
+- name: src/antifraud/exceptions/RestExceptionHandler.java
+  visible: true
+  text: |
+    package antifraud.exceptions;
+
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.ControllerAdvice;
+    import org.springframework.web.bind.annotation.ExceptionHandler;
+    import org.springframework.web.context.request.WebRequest;
+    import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+    @ControllerAdvice
+    public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+        @ExceptionHandler({NullPointerException.class})
+        protected ResponseEntity<Object>  handleNullPointerException(NullPointerException ex, WebRequest request) {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+  learner_created: true
+- name: src/antifraud/controller/TransactionController.java
+  visible: true
+  text: |
+    package antifraud.controller;
+
+    import antifraud.model.Response;
+    import antifraud.model.Status;
+    import antifraud.model.Transaction;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.PostMapping;
+    import org.springframework.web.bind.annotation.RequestBody;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RestController;
+
+    @RestController
+    @RequestMapping("/api/antifraud/transaction")
+    public class TransactionController {
+
+        @PostMapping
+        public ResponseEntity<Response> processTransaction(@RequestBody Transaction transaction) {
+
+            Long amount = transaction.getAmount();
+
+            if (amount <= 0) {
+                return ResponseEntity.badRequest().build();
+            } else if (amount <= 200) {
+                return ResponseEntity.ok(new Response(Status.ALLOWED));
+            } else if (amount <= 1500) {
+                return ResponseEntity.ok(new Response(Status.MANUAL_PROCESSING));
+            } else {
+                return ResponseEntity.ok(new Response(Status.PROHIBITED));
+            }
+        }
+    }
+  learner_created: true
+- name: src/antifraud/model/Transaction.java
+  visible: true
+  text: |
+    package antifraud.model;
+
+    import java.util.Objects;
+
+    public class Transaction {
+        private Long amount;
+
+        public Transaction() {
+        }
+
+        public Transaction(Long amount) {
+            this.amount = amount;
+        }
+
+        public Long getAmount() {
+            return amount;
+        }
+
+        public void setAmount(Long amount) {
+            this.amount = amount;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Transaction)) return false;
+            Transaction that = (Transaction) o;
+            return Objects.equals(amount, that.amount);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(amount);
+        }
+
+        @Override
+        public String toString() {
+            return "Transaction{" +
+                    "amount=" + amount +
+                    '}';
+        }
+    }
+  learner_created: true
+- name: src/antifraud/model/Response.java
+  visible: true
+  text: |
+    package antifraud.model;
+
+    import java.util.Objects;
+
+    public class Response {
+        private final Status result;
+
+        public Response(Status result) {
+            this.result = result;
+        }
+
+        public Status getResult() {
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Response)) return false;
+            Response response = (Response) o;
+            return result == response.result;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(result);
+        }
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "result=" + result +
+                    '}';
+        }
+    }
+  learner_created: true
+- name: src/antifraud/model/Status.java
+  visible: true
+  text: |
+    package antifraud.model;
+
+    public enum Status {
+        ALLOWED, PROHIBITED, MANUAL_PROCESSING;
+    }
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/18068#comment
 status: Unchecked
 record: -1
