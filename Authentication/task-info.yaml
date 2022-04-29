@@ -634,6 +634,45 @@ files:
         ALLOWED, PROHIBITED, MANUAL_PROCESSING;
     }
   learner_created: true
+- name: src/antifraud/security/SecurityConfig.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/security/RestAuthenticationEntryPoint.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/security/PasswordConfig.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/service/UserDetailsServiceImpl.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/model/User.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/service/UserService.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/repository/UserRepository.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/dtos/UserRequest.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/dtos/UserResponse.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/model/UserDetailsImpl.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/dtos/DeletedUserResponse.java
+  visible: true
+  learner_created: true
+- name: src/antifraud/controller/UsersController.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/18068#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Fri, 29 Apr 2022 11:15:40 UTC
 record: -1
