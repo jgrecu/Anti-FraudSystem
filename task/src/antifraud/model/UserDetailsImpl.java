@@ -12,10 +12,13 @@ public class UserDetailsImpl implements UserDetails {
     private final String password;
     private final List<GrantedAuthority> rolesAndAuthorities;
 
+    private final boolean isEnabled;
+
     public UserDetailsImpl(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.rolesAndAuthorities = List.of(new SimpleGrantedAuthority("USER"));
+        this.rolesAndAuthorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+        this.isEnabled = user.isEnabled();
     }
 
     @Override
@@ -50,6 +53,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 }

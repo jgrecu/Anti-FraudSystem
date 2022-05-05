@@ -1,8 +1,6 @@
 package antifraud.controller;
 
-import antifraud.dtos.DeletedUserResponse;
-import antifraud.dtos.UserRequest;
-import antifraud.dtos.UserResponse;
+import antifraud.dtos.*;
 import antifraud.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +22,8 @@ public class UsersController {
     @PostMapping("/user")
     public ResponseEntity<UserResponse> registerUser(@RequestBody @Valid UserRequest userRequest) {
         Optional<UserResponse> optionalUserResponse = userService.addUser(userRequest);
-        return optionalUserResponse.map(response -> ResponseEntity.status(201).body(response)).orElseGet(() -> ResponseEntity.status(409).build());
+        return optionalUserResponse.map(response -> ResponseEntity.status(201).body(response))
+                .orElseGet(() -> ResponseEntity.status(409).build());
     }
 
     @GetMapping("/list")
@@ -40,5 +39,25 @@ public class UsersController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/user")
+    public ResponseEntity<UserResponse> changeUserRole(@RequestBody @Valid EditUserRoleRequest editUserRoleRequest) {
+
+        Optional<UserResponse> optionalUserResponse = userService.editUserRole(editUserRoleRequest);
+
+        if (optionalUserResponse.isPresent()) {
+            UserResponse userResponse = optionalUserResponse.get();
+            return ResponseEntity.ok(userResponse);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/access")
+    public ResponseEntity<UserStatusResponse> lockUnlockUser(@RequestBody @Valid UnlockUserRequest unlockUserRequest) {
+        Optional<UserStatusResponse> userStatusResponse = userService.lockUnlockUser(unlockUserRequest);
+
+        return userStatusResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

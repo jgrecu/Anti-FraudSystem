@@ -12,17 +12,21 @@ public class UserResponse {
     private final String name;
     @NotBlank
     private final String username;
+    @NotBlank
+    private final String role;
 
-    public UserResponse(Long id, String name, String username) {
+    public UserResponse(Long id, String name, String username, String role) {
         this.id = id;
         this.name = name;
         this.username = username;
+        this.role = role;
     }
 
     public UserResponse(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.username = user.getUsername();
+        this.role = user.getRole();
     }
 
     public Long getId() {
@@ -37,12 +41,17 @@ public class UserResponse {
         return username;
     }
 
+    public String getRole() {
+        return role;
+    }
+
     @Override
     public String toString() {
         return "UserResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", username='" + username + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }
