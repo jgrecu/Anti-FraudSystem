@@ -41,7 +41,7 @@ public class UsersController {
         }
     }
 
-    @PutMapping("/user")
+    @PutMapping("/role")
     public ResponseEntity<UserResponse> changeUserRole(@RequestBody @Valid EditUserRoleRequest editUserRoleRequest) {
 
         Optional<UserResponse> optionalUserResponse = userService.editUserRole(editUserRoleRequest);
