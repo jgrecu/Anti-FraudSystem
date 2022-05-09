@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-public class UsersController {
+public class AuthController {
 
     private final UserService userService;
 
-    public UsersController(UserService userService) {
+    public AuthController(UserService userService) {
         this.userService = userService;
     }
 
@@ -55,8 +55,8 @@ public class UsersController {
     }
 
     @PutMapping("/access")
-    public ResponseEntity<UserStatusResponse> lockUnlockUser(@RequestBody @Valid UnlockUserRequest unlockUserRequest) {
-        Optional<UserStatusResponse> userStatusResponse = userService.lockUnlockUser(unlockUserRequest);
+    public ResponseEntity<StatusResponse> lockUnlockUser(@RequestBody @Valid UnlockUserRequest unlockUserRequest) {
+        Optional<StatusResponse> userStatusResponse = userService.lockUnlockUser(unlockUserRequest);
 
         return userStatusResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

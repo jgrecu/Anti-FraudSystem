@@ -6,7 +6,6 @@ import antifraud.exceptions.HttpConflictException;
 import antifraud.model.User;
 import antifraud.model.UserStatus;
 import antifraud.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -87,7 +86,7 @@ public class UserService {
         return Optional.empty();
     }
 
-    public Optional<UserStatusResponse> lockUnlockUser(UnlockUserRequest unlockUserRequest) {
+    public Optional<StatusResponse> lockUnlockUser(UnlockUserRequest unlockUserRequest) {
         Optional<User> userByUsername = userRepository.findUserByUsernameIgnoreCase(unlockUserRequest.getUsername());
         if (userByUsername.isPresent()) {
             User user = userByUsername.get();
@@ -98,7 +97,7 @@ public class UserService {
             user.setEnabled(enabled);
             userRepository.save(user);
             String status = String.format("User %s %sed!", user.getUsername(), unlockUserRequest.getOperation().toString().toLowerCase());
-            return Optional.of(new UserStatusResponse(status));
+            return Optional.of(new StatusResponse(status));
         }
         return Optional.empty();
     }

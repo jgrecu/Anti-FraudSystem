@@ -1,9 +1,9 @@
 package antifraud.dtos;
 
-public class UserStatusResponse {
+public class StatusResponse {
     private final String status;
 
-    public UserStatusResponse(String status) {
+    public StatusResponse(String status) {
         this.status = status;
     }
 
