@@ -3,6 +3,8 @@ package antifraud.dtos;
 import org.hibernate.validator.constraints.CreditCardNumber;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 public class TransactionRequest {
@@ -13,14 +15,23 @@ public class TransactionRequest {
     @CreditCardNumber
     private String number;
 
+    @NotEmpty
+    private String region;
+
+//    @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
+    @NotBlank
+    private String date;
+
 
     public TransactionRequest() {
     }
 
-    public TransactionRequest(Long amount, String ip, String number) {
+    public TransactionRequest(Long amount, String ip, String number, String region, String date) {
         this.amount = amount;
         this.ip = ip;
         this.number = number;
+        this.region = region;
+        this.date = date;
     }
 
     public Long getAmount() {
@@ -47,12 +58,30 @@ public class TransactionRequest {
         this.number = number;
     }
 
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         return "TransactionRequest{" +
                 "amount=" + amount +
                 ", ip='" + ip + '\'' +
                 ", number='" + number + '\'' +
+                ", region=" + region +
+                ", date=" + date +
                 '}';
     }
 }
