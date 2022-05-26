@@ -1,4 +1,4 @@
-<h5 id="description" id="description">Description</h5>
+<h5 id="description">Description</h5>
 
 <p>An enterprise anti-fraud system has hundreds of merchant users who take advantage of the system by checking the validity of the transactions only. These users do not want to delve into a list of stolen cards, suspicious IP addresses, and who else uses the app. On the other hand, the number of users responsible for reporting stolen cards/IPs and excluding them from the blacklist is limited. These users don't have access to user-management functions. Finally, we have several users who are 100%-trusted and are allowed to access and modify more sensitive data.</p>
 
@@ -55,7 +55,7 @@
 
 <p>Let's talk about roles. <code class="language-json">ADMINISTRATOR</code> is the user who has registered first, all other users should receive the <code class="language-json">MERCHANT</code> roles. All users added after <code class="language-json">ADMINISTRATOR</code> must be locked by default and unlocked later by <code class="language-json">ADMINISTRATOR</code>. The <code class="language-json">SUPPORT</code> role should be assigned by <code class="language-json">ADMINISTRATOR</code> to one of the users later.</p>
 
-<h5 id="objectives" id="objectives">Objectives</h5>
+<h5 id="objectives">Objectives</h5>
 
 <ul>
     <li>Add authorization to the service and implement the role model shown in the table above. The first registered user should receive the <code class="language-json">ADMINISTRATOR</code> role; the rest — <code class="language-json">MERCHANT</code>. In case of authorization violation, respond with the <code class="language-json">HTTP Forbidden</code> status (<code class="language-json">403</code>). Mind that only one role can be assigned to a user;</li>
@@ -131,7 +131,7 @@
     <li>If a user is not found, the endpoint must respond with <code class="language-json">HTTP Not Found</code> status (<code class="language-json">404</code>).</li>
 </ul>
 
-<h5 id="examples" id="examples">Examples</h5>
+<h5 id="examples">Examples</h5>
 
 <p><strong>Example 1: </strong><em>a POST request for /api/auth/user with the correct user credentials</em></p>
 

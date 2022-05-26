@@ -11,23 +11,27 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long transactionId;
     private Long amount;
     private String ip;
     private String number;
     private Region region;
     private LocalDateTime date;
+    private String result;
+    private String feedback;
 
     public Transaction() {
     }
 
     public Transaction(Long id, Long amount, String ip, String number, Region region, LocalDateTime date) {
-        this.id = id;
+        this.transactionId = id;
         this.amount = amount;
         this.ip = ip;
         this.number = number;
         this.region = region;
         this.date = date;
+        this.result = "";
+        this.feedback = "";
     }
 
     public Transaction(TransactionRequest transactionRequest) {
@@ -36,14 +40,16 @@ public class Transaction {
         this.number = transactionRequest.getNumber();
         this.region = Region.valueOf(transactionRequest.getRegion());
         this.date = LocalDateTime.parse(transactionRequest.getDate());
+        this.result = "";
+        this.feedback = "";
     }
 
-    public Long getId() {
-        return id;
+    public Long getTransactionId() {
+        return transactionId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 
     public Long getAmount() {
@@ -86,15 +92,33 @@ public class Transaction {
         this.date = date;
     }
 
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +
-                "id=" + id +
+                "id=" + transactionId +
                 ", amount=" + amount +
                 ", ip='" + ip + '\'' +
                 ", number='" + number + '\'' +
                 ", region=" + region +
                 ", date=" + date +
+                ", result='" + result + '\'' +
+                ", feedback='" + feedback + '\'' +
                 '}';
     }
 }

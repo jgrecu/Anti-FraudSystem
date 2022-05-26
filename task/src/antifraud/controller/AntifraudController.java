@@ -1,10 +1,11 @@
 package antifraud.controller;
 
 import antifraud.dtos.*;
+import antifraud.exceptions.UserNotFoundException;
+import antifraud.model.Transaction;
 import antifraud.service.CardService;
 import antifraud.service.IpAddressService;
 import antifraud.service.TransactionService;
-import org.hibernate.validator.constraints.CreditCardNumber;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,5 +68,21 @@ public class AntifraudController {
     @GetMapping("/stolencard")
     public List<AddCardResponse> getAllStolenCards() {
         return cardService.getStolenCards();
+    }
+
+    @PutMapping("/transaction")
+    public Transaction giveFeedbackToTransaction(@RequestBody FeedbackRequest feedbackRequest) {
+        return transactionService.giveFeedbackToTransaction(feedbackRequest)
+                .orElseThrow(() -> new UserNotFoundException("no transaction with id - "
+                        + feedbackRequest.getTransactionId()));
+    }
+    @GetMapping("/history")
+    public List<Transaction> showAllTransactions() {
+        return transactionService.getTransactionHistory();
+    }
+
+    @GetMapping("/history/{number}")
+    public List<Transaction> showAllTransactionsByCardNumber(@PathVariable String number) {
+        return transactionService.getTransactionHistoryByCardNumber(number);
     }
 }

@@ -1,7 +1,12 @@
 package antifraud.service;
 
+import antifraud.dtos.FeedbackRequest;
 import antifraud.dtos.TransactionRequest;
 import antifraud.dtos.TransactionResponse;
+import antifraud.exceptions.BadRequestException;
+import antifraud.exceptions.HttpConflictException;
+import antifraud.exceptions.UnprocessableEntityException;
+import antifraud.exceptions.UserNotFoundException;
 import antifraud.model.*;
 import antifraud.repository.CardRepository;
 import antifraud.repository.IpAddressRepository;
@@ -12,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -20,13 +24,15 @@ public class TransactionService {
     private final IpAddressRepository ipAddressRepository;
     private final CardRepository cardRepository;
     private final TransactionRepository transactionRepository;
+    private final CardAmountLimitsService cardAmountLimitsService;
 
     public TransactionService(IpAddressRepository ipAddressRepository,
                               CardRepository cardRepository,
-                              TransactionRepository transactionRepository) {
+                              TransactionRepository transactionRepository, CardAmountLimitsService cardAmountLimitsService) {
         this.ipAddressRepository = ipAddressRepository;
         this.cardRepository = cardRepository;
         this.transactionRepository = transactionRepository;
+        this.cardAmountLimitsService = cardAmountLimitsService;
     }
 
     public TransactionResponse processTransaction(TransactionRequest transactionRequest) {
@@ -40,7 +46,7 @@ public class TransactionService {
         List<String> prohibitedReasons = new ArrayList<>();
         List<String> manualProcessingReasons = new ArrayList<>();
 
-        int validateAmount = validateAmount(amount);
+        int validateAmount = validateAmount(amount, number);
         boolean validateIP = validateIP(ip);
         boolean validateCard = validateCard(number);
         long numberOfTransactionsForCardPerRegionInLastHour =
@@ -49,7 +55,6 @@ public class TransactionService {
                 getNumberOfTransactionIpLastHour(number, ip, dateTime);
 
         Transaction newTransaction = new Transaction(transactionRequest);
-        transactionRepository.save(newTransaction);
 
         if (validateAmount == 2) {
             manualProcessingReasons.add("amount");
@@ -87,23 +92,24 @@ public class TransactionService {
         String infoProhibited = String.join(", ", prohibitedReasons);
 
         if (validateAmount == 1 && prohibitedReasons.isEmpty() && manualProcessingReasons.isEmpty()) {
+            newTransaction.setResult(TransactionStatus.ALLOWED.toString());
+            transactionRepository.save(newTransaction);
             return new TransactionResponse(TransactionStatus.ALLOWED, "none");
-        } else if ( validateIP && validateCard && (validateAmount == 2 ||
-                numberOfTransactionsForCardPerRegionInLastHour == 2 || numberOfTransactionsForCardPerIpInLastHour == 2)) {
+        } else if (validateIP && validateCard && (validateAmount == 2 ||
+                numberOfTransactionsForCardPerRegionInLastHour == 2 ||
+                numberOfTransactionsForCardPerIpInLastHour == 2)) {
+            newTransaction.setResult(TransactionStatus.MANUAL_PROCESSING.toString());
+            transactionRepository.save(newTransaction);
             return new TransactionResponse(TransactionStatus.MANUAL_PROCESSING, infoManual);
         } else {
+            newTransaction.setResult(TransactionStatus.PROHIBITED.toString());
+            transactionRepository.save(newTransaction);
             return new TransactionResponse(TransactionStatus.PROHIBITED, infoProhibited);
         }
     }
 
-    private int validateAmount(Long amount) {
-        if (amount <= 200) {
-            return 1;
-        } else if (amount <= 1500) {
-            return 2;
-        } else {
-            return 3;
-        }
+    private int validateAmount(Long amount, String cardNumber) {
+        return cardAmountLimitsService.processAmount(amount, cardNumber);
     }
 
     private boolean validateIP(String ip) {
@@ -119,12 +125,7 @@ public class TransactionService {
     private long getNumberOfTransactionRegionLastHour(String cardNumber, Region region, LocalDateTime time) {
         List<Transaction> transactionList =
                 transactionRepository.findByNumberAndDateBetween(cardNumber, time.minusHours(1), time);
-//        System.out.println(transactionList);
-//        System.out.println(transactionList.stream()
-//                .map(Transaction::getRegion)
-//                .filter(transactionRegion -> !transactionRegion.equals(region))
-//                .distinct()
-//                .collect(Collectors.toList()));
+
         return transactionList.stream()
                 .map(Transaction::getRegion)
                 .filter(transactionRegion -> !transactionRegion.equals(region))
@@ -135,16 +136,77 @@ public class TransactionService {
     private long getNumberOfTransactionIpLastHour(String cardNumber, String ip, LocalDateTime time) {
         List<Transaction> transactionList =
                 transactionRepository.findByNumberAndDateBetween(cardNumber, time.minusHours(1), time);
-//        System.out.println(transactionList);
-//        System.out.println(transactionList.stream()
-//                .map(Transaction::getIp)
-//                .filter(transactionIp -> !transactionIp.equals(ip))
-//                .distinct()
-//                .collect(Collectors.toList()));
+
         return transactionList.stream()
                 .map(Transaction::getIp)
                 .filter(transactionIp -> !transactionIp.equals(ip))
                 .distinct()
                 .count();
+    }
+
+    public List<Transaction> getTransactionHistory() {
+        return transactionRepository.findAll();
+    }
+
+    public Optional<Transaction> giveFeedbackToTransaction(FeedbackRequest feedbackRequest) {
+        String requestFeedback = feedbackRequest.getFeedback().toString();
+
+        Optional<Transaction> optionalTransaction = transactionRepository.findById(feedbackRequest.getTransactionId());
+
+        if (optionalTransaction.isPresent()) {
+            Transaction transaction = optionalTransaction.get();
+            String feedback = transaction.getFeedback();
+            String result = transaction.getResult();
+            String number = transaction.getNumber();
+            Long amount = transaction.getAmount();
+
+            if (!feedback.isEmpty()) {
+                throw new HttpConflictException("Feedback already given");
+            }
+
+            if (result.equals(requestFeedback)) {
+                throw new UnprocessableEntityException("Provided feedback not allowed");
+            }
+
+            cardAmountLimitsService.processLimits(number, amount, result, requestFeedback);
+            transaction.setFeedback(feedbackRequest.getFeedback().toString());
+            transactionRepository.save(transaction);
+        }
+
+        return optionalTransaction;
+    }
+
+    public List<Transaction> getTransactionHistoryByCardNumber(String number) {
+
+        boolean validCreditCard = validateCreditCard(number);
+
+        if (!validCreditCard) {
+            throw new BadRequestException("Invalid Card format");
+        }
+
+        List<Transaction> transactionsByNumber = transactionRepository.findByNumber(number);
+
+        if (transactionsByNumber.isEmpty()) {
+            throw new UserNotFoundException("Card number - " + number + " not found!");
+        }
+
+        return transactionsByNumber;
+    }
+
+    private boolean validateCreditCard(String cardNum) {
+        // using Luhn algorithm
+        int nDigits = cardNum.length();
+        int nSum = 0;
+        for (int i = 0; i < nDigits; i++) {
+            int d = cardNum.charAt(i) - '0';
+            if (i % 2 == 0) {
+                d *= 2;
+                nSum += d / 10;
+                nSum += d % 10;
+            } else {
+                nSum += d;
+            }
+        }
+        return nSum % 10 == 0;
     }
 }

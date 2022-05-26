@@ -1,4 +1,4 @@
-<h5 id="description" id="description">Description</h5>
+<h5 id="description">Description</h5>
 
 <p>Enterprise applications like anti-fraud systems are used by different types of users with various access levels. Different users should have different rights to access various system parts. Let's set up the authentication procedure for our system. Of course, you can elaborate it yourself, but it is considered good practice to use an already tested and reliable implementation. Fortunately, Spring includes the Spring Security module that contains the right methods.</p>
 
@@ -13,7 +13,7 @@
    implementation 'org.springframework.boot:spring-boot-starter-security'
 }</code></pre>
 
-<p>Make sure that the <a target="_blank" target="_blank" href="https://owasp.org/www-community/attacks/csrf" rel="noopener noreferrer nofollow">CSRF</a> is disabled to facilitate testing. We do not recommend disabling it in real-world projects. We suggest the following configuration:</p>
+<p>Make sure that the <a target="_blank" target="_blank" target="_blank" target="_blank" target="_blank" href="https://owasp.org/www-community/attacks/csrf" rel="noopener noreferrer nofollow">CSRF</a> is disabled to facilitate testing. We do not recommend disabling it in real-world projects. We suggest the following configuration:</p>
 
 <pre><code class="language-java">    public void configure(HttpSecurity http) throws Exception {
         http.httpBasic()
@@ -42,7 +42,7 @@
         }
     }</code></pre>
 
-<h5 id="objectives" id="objectives">Objectives</h5>
+<h5 id="objectives">Objectives</h5>
 
 <ul>
     <li>Add the Spring security to your project and configure the HTTP basic authentication;</li>
@@ -101,7 +101,7 @@
     <li>Change the <code class="language-java">POST /api/antifraud/transaction</code> endpoint; it must be available only to all authorized users.</li>
 </ul>
 
-<h5 id="examples" id="examples">Examples</h5>
+<h5 id="examples">Examples</h5>
 
 <p><strong>Example 1: </strong><em>a POST request for /api/auth/user with the correct user information</em></p>
 

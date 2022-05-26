@@ -22,6 +22,11 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler
+    protected ResponseEntity<Object> handleUserNotFoundException(UnprocessableEntityException ex) {
+        return ResponseEntity.status(422).build();
+    }
+
+    @ExceptionHandler
     protected ResponseEntity<Object>  handleException(Exception ex) {
         return ResponseEntity.badRequest().build();
     }

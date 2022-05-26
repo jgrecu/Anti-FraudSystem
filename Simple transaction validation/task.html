@@ -1,4 +1,4 @@
-<h5 id="description" id="description">Description</h5>
+<h5 id="description">Description</h5>
 
 <p>To begin with, let's define the concepts and find out what makes a good anti-fraud system. Consider the procedure of online payment (a transaction):</p>
 
@@ -10,7 +10,7 @@
 
 <p>In the first stage, you need to create a simple rest endpoint that calculates whether a transaction is <code class="language-json">ALLOWED</code>, <code class="language-json">PROHIBITED</code>, or requires <code class="language-json">MANUAL_PROCESSING</code> by evaluating the amount of the transaction.</p>
 
-<h5 id="objectives" id="objectives">Objectives</h5>
+<h5 id="objectives">Objectives</h5>
 
 <ul>
     <li>
@@ -49,7 +49,7 @@
     <li>In case of wrong data in the request, the endpoint should respond with the status <code class="language-json">HTTP Bad Request</code> (<code class="language-json">400</code>).</li>
 </ul>
 
-<h5 id="examples" id="examples">Examples</h5>
+<h5 id="examples">Examples</h5>
 
 <p><strong>Example 1: </strong><em>a POST request for /api/antifraud/transaction</em></p>
 
