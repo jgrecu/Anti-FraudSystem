@@ -23,63 +23,13 @@ In this stage, you need to add the **authorization** feature. Authorization is a
 
 Let's implement the role model for our system:
 
-Anonymous
-
-MERCHANT
-
-ADMINISTRATOR
-
-SUPPORT
-
-POST /api/auth/user
-
-+
-
-+
-
-+
-
-+
-
-DELETE /api/auth/user
-
-\-
-
-\-
-
-+
-
-\-
-
-GET /api/auth/list
-
-\-
-
-\-
-
-+
-
-+
-
-POST /api/antifraud/transaction
-
-\-
-
-+
-
-\-
-
-\-
-
-POST /api/antifraud/access
-
-\-
-
-\-
-
-+
-
-\-
+| | Anonymous | MERCHANT | ADMINISTRATOR | SUPPORT
+|:-------------------------|:---------:|:----:|:----------:|:-------------:|
+| POST /api/auth/user | + | + | + | + |
+| DELETE /api/auth/user | \- | \- | + | \- |
+| GET /api/auth/list | \- | \- | + | + |
+| POST /api/antifraud/transaction | \- | + | \- | \- |
+| POST /api/antifraud/access | \- | \- | + | \- |
 
 Let's talk about roles. `ADMINISTRATOR` is the user who has registered first, all other users should receive the `MERCHANT` roles. All users added after `ADMINISTRATOR` must be locked by default and unlocked later by `ADMINISTRATOR`. The `SUPPORT` role should be assigned by `ADMINISTRATOR` to one of the users later.
 
