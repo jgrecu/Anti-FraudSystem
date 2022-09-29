@@ -51,37 +51,15 @@ In the current implementation, our system is very basic; each transaction is con
 
 Let's enrich the transaction event with the world region and the transaction date. There is the table for world region codes:
 
-Code
-
-Description
-
-EAP
-
-East Asia and Pacific
-
-ECA
-
-Europe and Central Asia
-
-HIC
-
-High-Income countries
-
-LAC
-
-Latin America and the Caribbean
-
-MENA
-
-The Middle East and North Africa
-
-SA
-
-South Asia
-
-SSA
-
-Sub-Saharan Africa
+| Code | Description |
+|:-------------------------|:---------:|
+| EAP | East Asia and Pacific |
+| ECA | Europe and Central Asia |
+| HIC | High-Income countries |
+| LAC | Latin America and the Caribbean |
+| MENA | The Middle East and North Africa |
+| SA | South Asia |
+| SSA | Sub-Saharan Africa |
 
 When working on an anti-fraud system, it is necessary to consider that the environment of transactions is constantly changing. There are many factors like the country's economy, the behavior of fraudsters, and the number of transactions happening concurrently that influence what we can call fraud. It is necessary to add certain adaptation mechanisms to our service, such as **feedback**. Feedback will be carried out manually by a `SUPPORT` specialist for completed transactions. Based on the feedback results, we will change the limits of fraud detection algorithms following the special rules. Take a look at the table below that shows the logic of our feedback system:
 
