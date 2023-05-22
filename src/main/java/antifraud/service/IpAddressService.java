@@ -46,7 +46,7 @@ public class IpAddressService {
         if (optionalIpAddress.isPresent()) {
             IpAddress ipAddress = optionalIpAddress.get();
             repository.delete(ipAddress);
-            return Optional.of(new StatusResponse(String.format("IP %s successfully removed!", ipAddress.getIp())));
+            return Optional.of(new StatusResponse("IP %s successfully removed!".formatted(ipAddress.getIp())));
         } else {
             return Optional.empty();
         }

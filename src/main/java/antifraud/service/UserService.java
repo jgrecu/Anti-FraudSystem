@@ -96,7 +96,7 @@ public class UserService {
             boolean enabled = unlockUserRequest.getOperation().equals(UserStatus.UNLOCK);
             user.setEnabled(enabled);
             userRepository.save(user);
-            String status = String.format("User %s %sed!", user.getUsername(), unlockUserRequest.getOperation().toString().toLowerCase());
+            String status = "User %s %sed!".formatted(user.getUsername(), unlockUserRequest.getOperation().toString().toLowerCase());
             return Optional.of(new StatusResponse(status));
         }
         return Optional.empty();

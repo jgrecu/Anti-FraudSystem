@@ -48,7 +48,7 @@ public class CardService {
         if (optionalCard.isPresent()) {
             Card card = optionalCard.get();
             cardRepository.delete(card);
-            return Optional.of(new StatusResponse(String.format("Card %s successfully removed!", card.getNumber())));
+            return Optional.of(new StatusResponse("Card %s successfully removed!".formatted(card.getNumber())));
         } else {
             return Optional.empty();
         }
