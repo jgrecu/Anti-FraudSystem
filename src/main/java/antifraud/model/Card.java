@@ -1,7 +1,5 @@
 package antifraud.model;
 
-import org.springframework.web.bind.annotation.GetMapping;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
